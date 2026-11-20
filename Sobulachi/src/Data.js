@@ -1,9 +1,9 @@
 // ===== EDIT THIS FILE to customise the site =====
 export const SITE = {
-  brand: "YOUR NAME",
-  whatsapp: "2340000000000", // country code + number, no "+" or spaces
-  email: "yourname@gmail.com",
-  instagram: "yourhandle",
+  brand: "Soby",
+  whatsapp: "2348102389057", // country code + number, no "+" or spaces
+  email: "sobula07@gmail.com",
+  instagram: "_sobulachi_",
 };
 
 export const NAV = [

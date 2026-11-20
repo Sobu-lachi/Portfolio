@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import {
-  Menu, X, Volume2, VolumeX, ChevronDown, ChevronLeft, ChevronRight,
-  Heart, MessageCircle, Mail, Camera, ArrowUpRight, Play, Moon, Sun,
+  Menu, X, Volume2, VolumeX, ChevronDown, ChevronLeft, ChevronRight, MessageCircle, Mail, Camera, ArrowUpRight, Play, Moon, Sun,
 } from "lucide-react";
 import { SITE, NAV, HERO_IMAGE, EDITING, UGC, CAROUSEL, FAQS } from "./Data";
 import { useTheme } from "./themeContext.jsx";
@@ -89,7 +88,7 @@ function Hero() {
 }
 
 /* One video: hover (mouse) / tap (touch) / focus to preview; sound button on the right */
-function VideoCard({ item, soundId, setSoundId, left }) {
+function VideoCard({ item, soundId, setSoundId }) {
   const vid = useRef(null);
   const [playing, setPlaying] = useState(false);
   const [ready, setReady] = useState(false);
@@ -118,7 +117,7 @@ function VideoCard({ item, soundId, setSoundId, left }) {
   return (
     <div
       tabIndex={0} role="group" aria-label={`Video preview: ${item.title || item.brand}`}
-      className="group relative aspect-[9/16] overflow-hidden rounded-3xl border border-black/10 bg-black shadow-md transition hover:shadow-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-pink-500"
+      className="group relative aspect-[9/14] overflow-hidden rounded-3xl border border-black/10 bg-black shadow-md transition hover:shadow-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-pink-500"
       onPointerEnter={(e) => { touch.current = e.pointerType !== "mouse"; if (!touch.current) start(); }}
       onPointerLeave={(e) => { if (e.pointerType === "mouse") stop(); }}
       onClick={() => touch.current && (playing ? stop() : start())}
@@ -131,10 +130,9 @@ function VideoCard({ item, soundId, setSoundId, left }) {
         className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
       {!playing && <div className="pointer-events-none absolute inset-0 grid place-items-center"><span className="rounded-full bg-white/90 p-4"><Play className="fill-black" /></span></div>}
       <button onClick={toggleSound} aria-pressed={sound} aria-label={sound ? "Mute video" : "Unmute video"}
-        className={`absolute right-3 top-3 grid h-10 w-10 place-items-center rounded-full backdrop-blur transition ${sound ? "bg-pink-500 text-white" : "bg-white/80 text-black hover:bg-white"}`}>
-        {sound ? <Volume2 size={18} /> : <VolumeX size={18} />}
+        className={`absolute right-3 top-3 grid h-7 w-7 place-items-center rounded-full backdrop-blur transition ${sound ? "bg-pink-500 text-white" : "bg-white/80 text-black hover:bg-white"}`}>
+        {sound ? <Volume2 size={15} /> : <VolumeX size={15} />}
       </button>
-      {left}
     </div>
   );
 }
@@ -160,26 +158,17 @@ function Editing() {
   );
 }
 
-/* Left-hand control: configurable via the `icon`/`label`/`onClick` props */
-function LeftControl({ icon: Icon = Heart, label = "Save (placeholder action)", onClick = () => {} }) {
-  return (
-    <button onClick={(e) => { e.stopPropagation(); onClick(); }} aria-label={label}
-      className="absolute left-3 top-3 grid h-10 w-10 place-items-center rounded-full bg-white/80 backdrop-blur transition hover:bg-pink-500 hover:text-white">
-      <Icon size={18} />
-    </button>
-  );
-}
 
 function UGCItem({ u, soundId, setSoundId }) {
   const [open, setOpen] = useState(false);
   return (
-    <article className="overflow-hidden rounded-3xl border border-white/15 bg-neutral-900">
-      <VideoCard item={u} soundId={soundId} setSoundId={setSoundId} left={<LeftControl icon={Heart} />} />
+    <article className="overflow-hidden rounded-3xl border border-black/15 bg-slate-100 dark:bg-neutral-900">
+      <VideoCard item={u} soundId={soundId} setSoundId={setSoundId}/>
       <div className="p-4">
         <div className="flex items-center justify-between gap-3">
-          <h3 className={`${display} text-2xl text-pink-500`}>{u.brand}</h3>
+          <h3 className={`${display} text-xl text-pink-500`}>{u.brand}</h3>
           <button onClick={() => setOpen(!open)} aria-expanded={open} aria-controls={`${u.id}-details`}
-            className="flex shrink-0 items-center gap-1 rounded-full border border-pink-500 px-4 py-1.5 text-sm font-bold text-pink-500 transition hover:bg-pink-500 hover:text-white">
+            className="flex shrink-0 items-center gap-1 rounded-full border border-pink-500 px-2 py-1.5 text-xs font-bold text-pink-500 transition hover:bg-pink-500 hover:text-white">
             {open ? "See Less" : "See More"}
             <ChevronDown size={16} className={`transition-transform duration-300 ${open ? "rotate-180" : ""}`} />
           </button>
@@ -204,7 +193,7 @@ function UGCSection() {
     <section id="ugc" className="bg-white py-24 text-black dark:bg-black dark:text-white">
       <div className="mx-x max-w-7xl px-16">
         <Reveal>
-          <div className="mb-10"><p className="font-bold text-pink-500">Brand collaborations (sample data)</p>
+          <div className="mb-10"><p className="font-bold text-pink-500">Brand collaborations</p>
             <h2 className={`${display} text-5xl sm:text-7xl`}>UGC Creator</h2></div>
           <div className="grid grid-cols-1 items-start gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {UGC.map((u) => <UGCItem key={u.id} u={u} soundId={soundId} setSoundId={setSoundId} />)}
@@ -215,33 +204,64 @@ function UGCSection() {
   );
 }
 
+const CAPTIONS = ["Behind the lens", "On set", "Late-night edits", "Creative mode", "Good vibes"]; // edit freely
 
-/* Carousel: main image large, next two as previews; positions animate via left/width */
+/* Coverflow carousel: centred polaroid, smaller frames receding on both sides */
 function AboutCarousel() {
   const n = CAROUSEL.length;
   const [i, setI] = useState(0);
   const x0 = useRef(null);
+  const half = Math.floor(n / 2);
   const go = (d) => setI((c) => (c + d + n) % n);
-  const slot = (pos) => pos === 0 ? { left: "0%", width: "58%", opacity: 1, zIndex: 2 }
-    : pos === 1 ? { left: "61%", width: "18%", opacity: 0.8, zIndex: 1 }
-    : pos === 2 ? { left: "82%", width: "18%", opacity: 0.8, zIndex: 1 }
-    : { left: "100%", width: "0%", opacity: 0, zIndex: 0 };
+  const offsetOf = (k) => ((k - i + n + half) % n) - half; // 0 = centre, ±1, ±2 = sides
+
+  const slot = (off) => {
+    const a = Math.abs(off), s = Math.sign(off);
+    const c = [{ x: 0, w: 50, h: 100 }, { x: 31, w: 26, h: 80 }, { x: 42, w: 16, h: 60 }][Math.min(a, 2)];
+    return {
+      left: `${50 + s * c.x}%`, width: `${c.w}%`, height: `${c.h}%`,
+      transform: "translate(-50%, -50%)", zIndex: 10 - a,
+      opacity: a > 2 ? 0 : 1, pointerEvents: a > 2 ? "none" : "auto",
+    };
+  };
+
   return (
-    <div>
-      <div className="relative aspect-[5/4] w-full select-none overflow-hidden" aria-roledescription="carousel"
+    <div className="relative px-9 sm:px-11" aria-roledescription="carousel">
+      <div
+        className="relative aspect-[4/3] w-full select-none "
         onTouchStart={(e) => (x0.current = e.touches[0].clientX)}
-        onTouchEnd={(e) => { const d = e.changedTouches[0].clientX - x0.current; if (Math.abs(d) > 40) go(d < 0 ? 1 : -1); }}>
-        {CAROUSEL.map((src, k) => (
-          <img key={k} src={src} alt={`Photo ${k + 1} (placeholder)`} draggable={false}
-            onClick={() => { const p = (k - i + n) % n; if (p) go(p); }}
-            style={slot((k - i + n) % n)}
-            className="absolute top-0 h-full rounded-3xl border border-black/10 object-cover shadow-md transition-all duration-700 ease-out dark:border-white/10" />
-        ))}
+        onTouchEnd={(e) => {
+          const d = e.changedTouches[0].clientX - x0.current;
+          if (Math.abs(d) > 40) go(d < 0 ? 1 : -1);
+        }}
+      >
+        {CAROUSEL.map((src, k) => {
+          const off = offsetOf(k);
+          return (
+            <figure
+              key={k}
+              onClick={() => off !== 0 && go(off)}
+              style={slot(off)}
+              className={`absolute top-1/2 flex flex-col rounded-sm bg-white p-[1.5%] dark:bg-transparent dark:p-0 shadow-xl ring-1 ring-black/10 transition-all duration-700 ease-out ${off !== 0 ? "cursor-pointer" : ""}`}
+            >
+              <img src={src} alt={`Photo ${k + 1} (placeholder)`} draggable={false}
+                className="min-h-0 w-full flex-1 object-cover rounded-3xl " />
+              <figcaption className={`font-display overflow-hidden text-center text-xl leading-8 tracking-wide text-neutral-500 transition-all duration-500 ${off === 0 ? "h-8 opacity-100" : "h-3 opacity-0"}`}>
+                {CAPTIONS[k % CAPTIONS.length]}
+              </figcaption>
+            </figure>
+          );
+        })}
       </div>
-      <div className="mt-4 flex gap-3">
-        <button onClick={() => go(-1)} aria-label="Previous image" className="grid h-11 w-11 place-items-center rounded-full border-2 border-black transition hover:bg-black hover:text-white dark:border-white dark:hover:bg-white dark:hover:text-black"><ChevronLeft /></button>
-        <button onClick={() => go(1)} aria-label="Next image" className="grid h-11 w-11 place-items-center rounded-full bg-pink-500 text-white transition hover:bg-pink-600"><ChevronRight /></button>
-      </div>
+
+      <button onClick={() => go(-1)} aria-label="Previous image"
+        className="absolute left-0 top-1/2 z-20 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full text-black transition hover:bg-pink-500 hover:text-white dark:text-white">
+        <ChevronLeft size={28} />
+      </button>
+      <button onClick={() => go(1)} aria-label="Next image"
+        className="absolute right-0 top-1/2 z-20 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full text-black transition hover:bg-pink-500 hover:text-white dark:text-white">
+        <ChevronRight size={28} />
+      </button>
     </div>
   );
 }
@@ -251,7 +271,7 @@ function About() {
     <section id="about" className="dark:bg-zinc-900 bg-gray-200 mx-auto grid max-w-7xl items-center gap-12 px-16 py-24 md:grid-cols-2">
       <Reveal><AboutCarousel /></Reveal>
       <Reveal>
-        <Heading kicker="Hi, I'm (your name)">About Me</Heading>
+        <Heading kicker="Hi, I'm Amaewhule Sobulachi">About Me</Heading>
         <div className="space-y-4 text-lg text-black/75 dark:text-white/75">
           <p>Placeholder: I'm a video editor and UGC creator who loves turning ideas into stories people actually want to watch.</p>
           <p>Placeholder: I edit for creators and brands, and I also film honest, relatable content in front of the camera.</p>
@@ -273,7 +293,7 @@ function Contact() {
       <Reveal>
         <div className="rounded-[2.5rem] border-2 border-black bg-pink-500/10 p-8 sm:p-14 dark:border-white/20 dark:bg-pink-500/10">
           <h2 className={`${display} text-5xl sm:text-7xl`}>Let's make something <span className="text-pink-500">great</span></h2>
-          <p className="mt-3 max-w-lg text-black/70 dark:text-white/70">Brands and creators: reach out on whichever platform suits you.</p>
+          <p className="mt-3 max-w-lg text-black/70 dark:text-white/70">Reach out on whichever platform suits you.</p>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             {links.map(({ Icon, label, sub, href }) => (
               <a key={label} href={href} target="_blank" rel="noopener noreferrer"
@@ -317,8 +337,8 @@ function FAQ() {
 
 function Footer() {
   return (
-    <footer className="bg-black px-5 py-14 text-white">
-      <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-3">
+    <footer className="bg-black px-24 py-14 text-white">
+      <div className="mx-auto grid max-w-6xl gap-64 md:grid-cols-3">
         <div><p className={`${display} text-4xl`}>{SITE.brand}</p><p className="mt-2 text-white/60">Stories worth watching, edited with care.</p></div>
         <ul className="space-y-2">{NAV.map(([l, h]) => <li key={h}><a href={h} className="transition hover:text-pink-500">{l}</a></li>)}</ul>
         <div className="flex gap-3">
