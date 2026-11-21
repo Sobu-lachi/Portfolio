@@ -283,6 +283,74 @@ function UGCSection() {
 }
 
 
+
+function WhyWorkWithMe() {
+  const reasons = [
+    {
+      number: "01",
+      title: "Intentional Storytelling",
+      description:
+        "I believe every video should have a purpose. I focus on creating edits that communicate your message and keep your audience engaged.",
+    },
+    {
+      number: "02",
+      title: "Attention to Detail",
+      description:
+        "From pacing and transitions to typography and sound design, I pay attention to the little things that bring a video together.",
+    },
+    {
+      number: "03",
+      title: "A Collaborative Approach",
+      description:
+        "Your vision matters. I take time to understand your ideas, welcome feedback and work with you to bring your creative direction to life.",
+    },
+  ];
+
+  return (
+    <section className="bg-gray-100 px-5 py-20 text-black dark:bg-zinc-900 dark:text-white sm:px-8 lg:px-16 lg:py-24">
+      <div className="mx-auto max-w-7xl">
+        <Reveal>
+          <div className="mb-12 max-w-2xl">
+            <p className="font-bold text-pink-500">
+              The value I bring
+            </p>
+            <h2 className={`${display} text-5xl sm:text-7xl`}>
+              More Than Just The Edit.
+            </h2>
+            <p className="mt-4 text-lg text-black/70 dark:text-white/70">
+              Great creative work goes beyond the final output.
+              Here's what you can expect when we work together.
+            </p>
+          </div>
+
+          <div className="grid gap-5 md:grid-cols-3">
+            {reasons.map((reason) => (
+              <article
+                key={reason.number}
+                className="rounded-3xl border border-black/10 bg-white p-7 transition duration-300 hover:-translate-y-1 hover:border-pink-500 hover:shadow-xl dark:border-white/10 dark:bg-neutral-950 sm:p-9"
+              >
+                <span className="font-display text-4xl text-pink-500">
+                  {reason.number}
+                </span>
+
+                <h3 className={`${display} mt-6 text-3xl`}>
+                  {reason.title}
+                </h3>
+
+                <p className="mt-4 leading-relaxed text-black/70 dark:text-white/70">
+                  {reason.description}
+                </p>
+              </article>
+            ))}
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+
+
 const CAPTIONS = ["Behind the lens", "On set", "Late-night edits", "Creative mode", "Good vibes"]; // edit freely
 
 /* Coverflow carousel: centred polaroid, smaller frames receding on both sides */
@@ -380,7 +448,7 @@ function About() {
   return (
     <section
       id="about"
-      className="mx-auto grid max-w-7xl items-center gap-12 bg-gray-200 px-4 py-16 dark:bg-zinc-900 sm:px-8 sm:py-20 md:grid-cols-2 lg:px-12 lg:py-24"
+      className="mx-auto grid mt-32 max-w-7xl items-center gap-12 bg-gray-200 px-4 py-16 dark:bg-zinc-900 sm:px-8 sm:py-20 md:grid-cols-2 lg:px-12 lg:py-24"
     >
       <Reveal className="w-full min-w-0">
         <AboutCarousel />
@@ -520,7 +588,17 @@ export default function App() {
 
   return (
     <div className={`min-h-screen font-body transition-colors ${isDark ? "dark bg-neutral-950 text-white" : "bg-white text-black"}`}>
-      <Nav isDark={isDark} toggleTheme={toggleTheme} /><main><Hero /><Editing /><UGCSection /><About /><Contact /><FAQ /></main><Footer />
+      <Nav isDark={isDark} toggleTheme={toggleTheme} />
+      <main>
+        <Hero />
+        <Editing />
+        <UGCSection />
+        <WhyWorkWithMe />
+        <About />
+        <Contact />
+        <FAQ />
+      </main>
+      <Footer />
     </div>
   );
 }
