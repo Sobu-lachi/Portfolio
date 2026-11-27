@@ -1,3 +1,5 @@
+import creatorImage from './assets/creatorImage.jpeg'
+import edit1 from './assets/edit1.jpg'
 // ===== EDIT THIS FILE to customise the site =====
 export const SITE = {
   brand: "Soby",
@@ -7,19 +9,30 @@ export const SITE = {
 };
 
 export const NAV = [
-  ["Home", "#home"], ["Video Editing", "#editing"], ["UGC", "#ugc"],
+  ["Home", "#home"], ["Video Editing", "#editing"],
   ["About", "#about"], ["Contact", "#contact"],
 ];
+//  ["UGC", "#ugc"],
 
 // Sample CC0 clip (MDN). Replace `src` with your own videos; `poster` is optional.
 const SAMPLE = "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
 const img = (seed, w = 600, h = 800) => `https://picsum.photos/seed/${seed}/${w}/${h}`;
 
-export const HERO_IMAGE = img("portrait-main", 800, 1000); // swap for your portrait
+export const HERO_IMAGE = creatorImage;
 
-export const EDITING = [1, 2, 3, 4].map((n) => ({
-  id: `edit-${n}`, title: `Sample Edit ${n}`, src: SAMPLE, poster: img(`edit${n}`),
-}));
+// Keep each video's MP4 URL separate from its still-image thumbnail URL.
+// Replace each poster with a unique ImageKit JPG/PNG URL when available.
+export const EDITING = [
+  {
+    id: "edit-1",
+    title: "Sample Edit 1",
+    src: "https://ik.imagekit.io/pyy7iucfe/lv_0_20261024194713.mp4?updatedAt=17957879418509",
+    poster: edit1,
+  },
+  { id: "edit-2", title: "Sample Edit 2", src: SAMPLE, poster: img("edit2") },
+  { id: "edit-3", title: "Sample Edit 3", src: SAMPLE, poster: img("edit3") },
+  { id: "edit-4", title: "Sample Edit 4", src: SAMPLE, poster: img("edit4") },
+];
 
 export const UGC = [1, 2, 3, 4].map((n) => ({
   id: `ugc-${n}`, src: SAMPLE, poster: img(`ugc${n}`),

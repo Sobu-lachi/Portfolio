@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   Menu, X, Volume2, VolumeX, ChevronDown, MessageCircle, Mail, Camera, ArrowUpRight, Play, Moon, Sun,
 } from "lucide-react";
-import { SITE, NAV, HERO_IMAGE, EDITING, UGC, CAROUSEL, FAQS } from "./Data";
+import { SITE, NAV, HERO_IMAGE, EDITING, CAROUSEL, FAQS } from "./Data"; //UGC, 
 import { useTheme } from "./themeContext.jsx";
 
 const display = "font-display uppercase tracking-wide";
@@ -110,6 +110,7 @@ function VideoCard({ item, soundId, setSoundId }) {
   const [playing, setPlaying] = useState(false);
   const [ready, setReady] = useState(false);
   const sound = soundId === item.id;
+  // const youtubeEmbedUrl = getYouTubeEmbedUrl(item.src);
 
   useEffect(() => { if (vid.current && !sound) vid.current.muted = true; }, [sound]);
 
@@ -192,95 +193,95 @@ function Editing() {
 }
 
 
-function UGCItem({ u, soundId, setSoundId }) {
-  const [open, setOpen] = useState(false);
+// function UGCItem({ u, soundId, setSoundId }) {
+//   const [open, setOpen] = useState(false);
 
-  return (
-    <article className="min-w-0 overflow-hidden rounded-3xl border border-black/10 bg-slate-100 shadow-sm transition hover:shadow-lg dark:border-white/10 dark:bg-neutral-900">
-      <VideoCard item={u} soundId={soundId} setSoundId={setSoundId} />
+//   return (
+//     <article className="min-w-0 overflow-hidden rounded-3xl border border-black/10 bg-slate-100 shadow-sm transition hover:shadow-lg dark:border-white/10 dark:bg-neutral-900">
+//       <VideoCard item={u} soundId={soundId} setSoundId={setSoundId} />
 
-      <div className="p-2 sm:p-3">
-        <div className="flex items-center justify-between gap-2 min-w-0">
-          <h3 className={`${display} min-w-0 truncate text-sm text-pink-500 sm:text-base`}>
-            {u.brand}
-          </h3>
+//       <div className="p-2 sm:p-3">
+//         <div className="flex items-center justify-between gap-2 min-w-0">
+//           <h3 className={`${display} min-w-0 truncate text-sm text-pink-500 sm:text-base`}>
+//             {u.brand}
+//           </h3>
 
-          <button
-            onClick={() => setOpen(!open)}
-            aria-expanded={open}
-            aria-controls={`${u.id}-details`}
-            className="flex shrink-0 items-center gap-1 rounded-full md:border md:border-pink-500 px-2.5 py-2 text-xs font-bold text-pink-500 transition hover:bg-pink-500 hover:text-white"
-          >
-            <span className= "hidden sm:inline">
-            {open ? "See Less" : "See More"}
-            </span>
-            <ChevronDown
-              size={15}
-              className={`shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
-            />
-          </button>
-        </div>
+//           <button
+//             onClick={() => setOpen(!open)}
+//             aria-expanded={open}
+//             aria-controls={`${u.id}-details`}
+//             className="flex shrink-0 items-center gap-1 rounded-full md:border md:border-pink-500 px-2.5 py-2 text-xs font-bold text-pink-500 transition hover:bg-pink-500 hover:text-white"
+//           >
+//             <span className= "hidden sm:inline">
+//             {open ? "See Less" : "See More"}
+//             </span>
+//             <ChevronDown
+//               size={15}
+//               className={`shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+//             />
+//           </button>
+//         </div>
 
-        <div
-          id={`${u.id}-details`}
-          className={`grid transition-all duration-300 ${
-            open ? "mt-4 grid-rows-[1fr]" : "grid-rows-[0fr]"
-          }`}
-        >
-          <div className="overflow-hidden text-sm text-black/70 dark:text-white/70">
-            <dl className="space-y-3">
-              <div>
-                <dt className="font-bold text-black dark:text-white">Campaign</dt>
-                <dd>{u.description}</dd>
-              </div>
-              <div>
-                <dt className="font-bold text-black dark:text-white">Objective</dt>
-                <dd>{u.objective}</dd>
-              </div>
-              <div>
-                <dt className="font-bold text-black dark:text-white">Details</dt>
-                <dd>{u.details}</dd>
-              </div>
-            </dl>
-          </div>
-        </div>
-      </div>
-    </article>
-  );
-}
+//         <div
+//           id={`${u.id}-details`}
+//           className={`grid transition-all duration-300 ${
+//             open ? "mt-4 grid-rows-[1fr]" : "grid-rows-[0fr]"
+//           }`}
+//         >
+//           <div className="overflow-hidden text-sm text-black/70 dark:text-white/70">
+//             <dl className="space-y-3">
+//               <div>
+//                 <dt className="font-bold text-black dark:text-white">Campaign</dt>
+//                 <dd>{u.description}</dd>
+//               </div>
+//               <div>
+//                 <dt className="font-bold text-black dark:text-white">Objective</dt>
+//                 <dd>{u.objective}</dd>
+//               </div>
+//               <div>
+//                 <dt className="font-bold text-black dark:text-white">Details</dt>
+//                 <dd>{u.details}</dd>
+//               </div>
+//             </dl>
+//           </div>
+//         </div>
+//       </div>
+//     </article>
+//   );
+// }
 
-function UGCSection() {
-  const [soundId, setSoundId] = useState(null);
+// function UGCSection() {
+//   const [soundId, setSoundId] = useState(null);
 
-  return (
-    <section
-      id="ugc"
-      className="bg-white py-16 text-black dark:bg-black dark:text-white sm:py-20 lg:py-24"
-    >
-      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-10">
-        <Reveal>
-          <div className="mb-8 sm:mb-10">
-            <p className="font-bold text-pink-500">Brand collaborations</p>
-            <h2 className={`${display} text-5xl sm:text-6xl lg:text-7xl`}>
-              UGC Creator
-            </h2>
-          </div>
+//   return (
+//     <section
+//       id="ugc"
+//       className="bg-white py-16 text-black dark:bg-black dark:text-white sm:py-20 lg:py-24"
+//     >
+//       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-10">
+//         <Reveal>
+//           <div className="mb-8 sm:mb-10">
+//             <p className="font-bold text-pink-500">Brand collaborations</p>
+//             <h2 className={`${display} text-5xl sm:text-6xl lg:text-7xl`}>
+//               UGC Creator
+//             </h2>
+//           </div>
 
-          <div className="grid grid-cols-2 items-start gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
-            {UGC.map((u) => (
-              <UGCItem
-                key={u.id}
-                u={u}
-                soundId={soundId}
-                setSoundId={setSoundId}
-              />
-            ))}
-          </div>
-        </Reveal>
-      </div>
-    </section>
-  );
-}
+//           <div className="grid grid-cols-2 items-start gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
+//             {UGC.map((u) => (
+//               <UGCItem
+//                 key={u.id}
+//                 u={u}
+//                 soundId={soundId}
+//                 setSoundId={setSoundId}
+//               />
+//             ))}
+//           </div>
+//         </Reveal>
+//       </div>
+//     </section>
+//   );
+// }
 
 
 
@@ -307,7 +308,7 @@ function WhyWorkWithMe() {
   ];
 
   return (
-    <section className="bg-gray-100 px-5 py-20 text-black dark:bg-zinc-900 dark:text-white sm:px-8 lg:px-16 lg:py-24">
+    <section className="bg-white px-5 py-20 text-black dark:bg-black dark:text-white sm:px-8 lg:px-16 lg:py-24">
       <div className="mx-auto max-w-7xl">
         <Reveal>
           <div className="mb-12 max-w-2xl">
@@ -448,7 +449,7 @@ function About() {
   return (
     <section
       id="about"
-      className="mx-auto grid mt-32 max-w-7xl items-center gap-12 bg-gray-200 px-4 py-16 dark:bg-zinc-900 sm:px-8 sm:py-20 md:grid-cols-2 lg:px-12 lg:py-24"
+      className="mx-auto grid max-w-7xl items-center gap-12 bg-gray-200 px-4 py-16 dark:bg-zinc-900 sm:px-8 sm:py-20 md:grid-cols-2 lg:px-12 lg:py-24"
     >
       <Reveal className="w-full min-w-0">
         <AboutCarousel />
@@ -592,7 +593,7 @@ export default function App() {
       <main>
         <Hero />
         <Editing />
-        <UGCSection />
+        {/* <UGCSection /> */}
         <WhyWorkWithMe />
         <About />
         <Contact />
